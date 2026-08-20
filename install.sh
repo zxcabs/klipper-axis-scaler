@@ -1,23 +1,15 @@
 #!/usr/bin/env bash
 
-# Скрипт автоматической установки плагина AxisScaler в систему Moonraker
-SRCDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-MOONRAKER_EXT_DIR="${HOME}/moonraker/moonraker/components"
+SRCDIR="$( cd "$( dirname "${BASH_SOURCE}" )" && pwd )"
+# Создаем отдельную независимую папку для кастомных компонентов
+DEST_DIR="/home/mks/printer_data/config"
 
-echo "=== Установка Moonraker Axis Scaler ==="
+echo "=== Установка Axis Scaler для FreeDi ==="
+mkdir -p "$DEST_DIR"
 
-# Проверяем, существует ли папка компонентов Moonraker
-if [ ! -d "$MOONRAKER_EXT_DIR" ]; then
-    echo "Ошибка: Директория компонентов Moonraker не найдена по пути $MOONRAKER_EXT_DIR"
-    exit 1
-fi
+# Создаем символическую ссылку в нашу новую чистую папку
+ln -sf "${SRCDIR}/axis_scaler.py" "${DEST_DIR}/axis_scaler.py"
 
-# Создаем символическую ссылку на файл плагина
-echo "Создание символической ссылки для axis_scaler.py..."
-ln -sf "${SRCDIR}/axis_scaler.py" "${MOONRAKER_EXT_DIR}/axis_scaler.py"
-
-# Перезапускаем сервис Moonraker для применения изменений
-echo "Перезапуск сервиса Moonraker..."
+echo "Перезапуск Moonraker..."
 sudo systemctl restart moonraker
-
-echo "Установка успешно завершена!"
+echo "Установка завершена!"
